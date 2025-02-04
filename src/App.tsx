@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
 import QRCode from "qrcode";
 import addAmountToPixCode from './pix/addAmount';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function App() {
@@ -78,7 +80,7 @@ function App() {
 
   const copyPixKey = () => {
     navigator.clipboard.writeText('62 985201901');
-    alert("Chave PIX copiada!");
+    toast.success("Chave PIX copiada!");
   };
 
   const formatarMoeda = (valor: string | number) => {
@@ -127,21 +129,18 @@ function App() {
 
       {/* Descrição */}
       <div className="description">
-        <p>
-          Oi gente! Descricão do nosso presente: <br />
-          <br />
-          Processo CNH 1ª via B 🚗 <br />
-          R$ 190,00 Exames <br />
-          R$ 350,00 Curso online <br />
-          R$ 422,50 Taxa Detran
-          <br />
-          R$ 200,00 Telemetria <br />
-          R$ 800,00 Pacote 20 aulas carro <br />
-          R$ 50,00 Aluguel Carro <br />
-          <br />
-          <br />
-          <strong>Total: R$ 2.012,50</strong>
-        </p>
+        <p>Oi gente! Descrição do nosso presente:</p>
+        <div className="grid-container">
+          <div>Processo CNH 1ª via B 🚗</div>
+          <br/>
+          <div><strong>R$ 190,00</strong> Exames</div>
+          <div><strong>R$ 350,00</strong> Curso online</div>
+          <div><strong>R$ 422,50</strong> Taxa Detran</div>
+          <div><strong>R$ 200,00</strong> Telemetria</div>
+          <div><strong>R$ 800,00</strong> Pacote 20 aulas carro</div>
+          <div><strong>R$ 50,00</strong> Aluguel Carro</div>
+        </div>
+        <p><strong>Total: R$ 2.012,50</strong></p>
       </div>
 
       {/* Modal */}
@@ -217,6 +216,7 @@ function App() {
           </div>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 }
