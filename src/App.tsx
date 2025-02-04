@@ -1,88 +1,89 @@
-import './styles.css'
-import { useState, useEffect } from 'react'
-import { supabase } from './lib/supabase'
+import "./styles.css";
+import { useState, useEffect } from "react";
+import { supabase } from "./lib/supabase";
 
 function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [step, setStep] = useState(1)
-  const [nome, setNome] = useState('')
-  const [valor, setValor] = useState('')
-  const [amount, setAmount] = useState(0)
-  const [apoiadores, setApoiadores] = useState(0)
-  const chavePix = '123456789' // Substitua pela sua chave PIX real
-  const meta = import.meta.env.VITE_META
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [step, setStep] = useState(1);
+  const [nome, setNome] = useState("");
+  const [valor, setValor] = useState("");
+  const [amount, setAmount] = useState(0);
+  const [apoiadores, setApoiadores] = useState(0);
+  const chavePix = "123456789"; // Substitua pela sua chave PIX real
+  const meta = import.meta.env.VITE_META;
 
   // Carrega os dados do Supabase ao iniciar
   useEffect(() => {
-    carregarDados()
-  }, [])
+    carregarDados();
+  }, []);
 
   const carregarDados = async () => {
     try {
       // Busca todos os doadores
       const { data: doadores, error } = await supabase
-        .from('doadores')
-        .select('*')
+        .from("doadores")
+        .select("*");
 
-      if (error) throw error
+      if (error) throw error;
 
       // Calcula o total arrecadado
-      const total = doadores?.reduce((acc, doador) => acc + doador.valor, 0) || 0
-      setAmount(total)
-      setApoiadores(doadores?.length || 0)
+      const total =
+        doadores?.reduce((acc, doador) => acc + doador.valor, 0) || 0;
+      setAmount(total);
+      setApoiadores(doadores?.length || 0);
     } catch (error) {
-      console.error('Erro ao carregar dados:', error)
+      console.error("Erro ao carregar dados:", error);
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     try {
       // Insere novo doador
       const { error } = await supabase
-        .from('doadores')
-        .insert([
-          { nome, valor: Number(valor) }
-        ])
+        .from("doadores")
+        .insert([{ nome, valor: Number(valor) }]);
 
-      if (error) throw error
+      if (error) throw error;
 
       // Atualiza os dados
-      await carregarDados()
-      
+      await carregarDados();
+
       // Avança para o próximo passo
-      setStep(2)
+      setStep(2);
     } catch (error) {
-      console.error('Erro ao salvar doação:', error)
-      alert('Erro ao processar doação. Por favor, tente novamente.')
+      console.error("Erro ao salvar doação:", error);
+      alert("Erro ao processar doação. Por favor, tente novamente.");
     }
-  }
+  };
 
   const copyPixKey = () => {
-    navigator.clipboard.writeText(chavePix)
-    alert('Chave PIX copiada!')
-  }
+    navigator.clipboard.writeText(chavePix);
+    alert("Chave PIX copiada!");
+  };
 
   const formatarMoeda = (valor: string | number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(Number(valor))
-  }
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(Number(valor));
+  };
 
   return (
     <div className="container">
       {/* Cabeçalho */}
-      <div className="header">       
-        <h1 className="title">Intercâmbio na República Tcheca: Me ajude nessa jornada</h1>
-        <div className="id">ID: 5223815</div>
+      <div className="header">
+        <h1 className="title">
+          Presente de Aniversário Daniele - CNH 
+          <span className="car-animation">🚗</span>
+        </h1>        
       </div>
 
       {/* Card Principal */}
       <div className="card">
         <img src="/dani.jpg" alt="Foto da Dani" className="card-image" />
-        
+
         <div className="card-content">
           <div>
             <div className="category">Arrecadado</div>
@@ -91,15 +92,17 @@ function App() {
           </div>
 
           <div className="progress-bar">
-            <div 
-              className="progress-value" 
+            <div
+              className="progress-value"
               style={{ width: `${(amount / Number(meta)) * 100}%` }}
             ></div>
           </div>
 
           <div className="footer">
             <div className="supporters">Apoiadores: {apoiadores}</div>
-            <button className="button" onClick={() => setIsModalOpen(true)}>Quero Ajudar</button>
+            <button className="button" onClick={() => setIsModalOpen(true)}>
+              Quero Ajudar
+            </button>
           </div>
         </div>
       </div>
@@ -107,10 +110,16 @@ function App() {
       {/* Descrição */}
       <div className="description">
         <p>
-          Oi gente! Estou fazendo um intercâmbio pelo Rotary na República Tcheca. 
-          Tem uma viagem proposta por eles para os intercambistas para fazer um tour histórico pelo continente,
-          mas o custo é muito alto para mim. Por isso fiz essa vaquinha e agradeceria muito se vocês pudessem
-          colaborar com qualquer valor para me ajudar a ir com o grupo. Desde já, gratidão!
+          Oi gente! Descricão do nosso presente: <br /><br />
+          Processo CNH 1ª via B 🚗 <br />
+          R$ 190,00 Exames <br />
+          R$ 350,00 Curso online <br />
+          R$ 422,50 Taxa Detran<br />
+          R$ 200,00 Telemetria <br />
+          R$ 800,00 Pacote 20 aulas carro <br />
+          R$ 50,00 Aluguel Carro <br />
+          <br /><br />
+          <strong>Total: R$ 2.012,50</strong>
         </p>
       </div>
 
@@ -118,12 +127,17 @@ function App() {
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal">
-            <button className="close-button" onClick={() => {
-              setIsModalOpen(false)
-              setStep(1)
-              setValor('')
-              setNome('')
-            }}>×</button>
+            <button
+              className="close-button"
+              onClick={() => {
+                setIsModalOpen(false);
+                setStep(1);
+                setValor("");
+                setNome("");
+              }}
+            >
+              ×
+            </button>
 
             {step === 1 ? (
               <form onSubmit={handleSubmit} className="form">
@@ -150,17 +164,24 @@ function App() {
                     required
                   />
                 </div>
-                <button type="submit" className="button">Continuar</button>
+                <button type="submit" className="button">
+                  Continuar
+                </button>
               </form>
             ) : (
               <div className="pix-container">
                 <h2>Pagamento via PIX</h2>
                 <div className="qr-code">
-                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020126580014BR.GOV.BCB.PIX0136123456789520400005303986540510.005802BR5913Daniela Silva6008Brasilia62070503***6304E2CA" alt="QR Code PIX" />
+                  <img
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020126580014BR.GOV.BCB.PIX0136123456789520400005303986540510.005802BR5913Daniela Silva6008Brasilia62070503***6304E2CA"
+                    alt="QR Code PIX"
+                  />
                 </div>
                 <div className="pix-key">
                   <p>Chave PIX: {chavePix}</p>
-                  <button className="button" onClick={copyPixKey}>Copiar Chave</button>
+                  <button className="button" onClick={copyPixKey}>
+                    Copiar Chave
+                  </button>
                 </div>
               </div>
             )}
@@ -168,7 +189,7 @@ function App() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
