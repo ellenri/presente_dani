@@ -1,6 +1,9 @@
 import "./styles.css";
 import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
+import QRCode from "qrcode";
+import addAmountToPixCode from './pix/addAmount';
+
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -8,14 +11,29 @@ function App() {
   const [nome, setNome] = useState("");
   const [valor, setValor] = useState("");
   const [amount, setAmount] = useState(0);
+  const [pix, setPix] = useState<string | null>(null);
   const [apoiadores, setApoiadores] = useState(0);
-  const chavePix = "123456789"; // Substitua pela sua chave PIX real
   const meta = import.meta.env.VITE_META;
 
   // Carrega os dados do Supabase ao iniciar
   useEffect(() => {
     carregarDados();
   }, []);
+
+  useEffect(() => {
+    if (valor) {
+      updatePix();
+    }
+  }, [valor]);
+
+  const updatePix = async () => {
+    const pixCodeWithoutAmount = '00020126360014BR.GOV.BCB.PIX0114+55629852019015204000053039865802BR5901N6001C62070503***63042660';
+    const payload = addAmountToPixCode(pixCodeWithoutAmount, Number(valor));
+    const url = await QRCode.toDataURL(payload);
+    setPix(url);
+    console.log('Extracted Amount:', payload);
+
+  };
 
   const carregarDados = async () => {
     try {
@@ -59,7 +77,7 @@ function App() {
   };
 
   const copyPixKey = () => {
-    navigator.clipboard.writeText(chavePix);
+    navigator.clipboard.writeText('62 985201901');
     alert("Chave PIX copiada!");
   };
 
@@ -75,9 +93,9 @@ function App() {
       {/* Cabeçalho */}
       <div className="header">
         <h1 className="title">
-          Presente de Aniversário Daniele - CNH 
+          Presente de Aniversário Daniele - CNH
           <span className="car-animation">🚗</span>
-        </h1>        
+        </h1>
       </div>
 
       {/* Card Principal */}
@@ -110,15 +128,18 @@ function App() {
       {/* Descrição */}
       <div className="description">
         <p>
-          Oi gente! Descricão do nosso presente: <br /><br />
+          Oi gente! Descricão do nosso presente: <br />
+          <br />
           Processo CNH 1ª via B 🚗 <br />
           R$ 190,00 Exames <br />
           R$ 350,00 Curso online <br />
-          R$ 422,50 Taxa Detran<br />
+          R$ 422,50 Taxa Detran
+          <br />
           R$ 200,00 Telemetria <br />
           R$ 800,00 Pacote 20 aulas carro <br />
           R$ 50,00 Aluguel Carro <br />
-          <br /><br />
+          <br />
+          <br />
           <strong>Total: R$ 2.012,50</strong>
         </p>
       </div>
@@ -172,17 +193,25 @@ function App() {
               <div className="pix-container">
                 <h2>Pagamento via PIX</h2>
                 <div className="qr-code">
-                  <img
-                    src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020126580014BR.GOV.BCB.PIX0136123456789520400005303986540510.005802BR5913Daniela Silva6008Brasilia62070503***6304E2CA"
+                  {pix && (
+                    <img
+                      src={pix}
+                      alt="PIX QR Code"
+                      style={{ width: "300px", height: "200px" }}
+                    />
+                  )}
+                  {/* <img
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020126360014BR.GOV.BCB.PIX0114+55629852019015204000053039865802BR5901N6001C62070503***63042660"
                     alt="QR Code PIX"
-                  />
+                  /> */}
                 </div>
                 <div className="pix-key">
-                  <p>Chave PIX: {chavePix}</p>
+                  <p>Chave PIX: 62 985201901</p>
                   <button className="button" onClick={copyPixKey}>
                     Copiar Chave
                   </button>
                 </div>
+                <p>Ellen Ribeiro Borges - NuBank</p>
               </div>
             )}
           </div>
