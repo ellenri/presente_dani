@@ -1,21 +1,74 @@
 import './styles.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { supabase } from './lib/supabase'
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [step, setStep] = useState(1)
   const [nome, setNome] = useState('')
   const [valor, setValor] = useState('')
+  const [amount, setAmount] = useState(0)
+  const [apoiadores, setApoiadores] = useState(0)
   const chavePix = '123456789' // Substitua pela sua chave PIX real
+  const meta = import.meta.env.VITE_META
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Carrega os dados do Supabase ao iniciar
+  useEffect(() => {
+    carregarDados()
+  }, [])
+
+  const carregarDados = async () => {
+    try {
+      // Busca todos os doadores
+      const { data: doadores, error } = await supabase
+        .from('doadores')
+        .select('*')
+
+      if (error) throw error
+
+      // Calcula o total arrecadado
+      const total = doadores?.reduce((acc, doador) => acc + doador.valor, 0) || 0
+      setAmount(total)
+      setApoiadores(doadores?.length || 0)
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error)
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setStep(2)
+    
+    try {
+      // Insere novo doador
+      const { error } = await supabase
+        .from('doadores')
+        .insert([
+          { nome, valor: Number(valor) }
+        ])
+
+      if (error) throw error
+
+      // Atualiza os dados
+      await carregarDados()
+      
+      // Avança para o próximo passo
+      setStep(2)
+    } catch (error) {
+      console.error('Erro ao salvar doação:', error)
+      alert('Erro ao processar doação. Por favor, tente novamente.')
+    }
   }
 
   const copyPixKey = () => {
     navigator.clipboard.writeText(chavePix)
     alert('Chave PIX copiada!')
+  }
+
+  const formatarMoeda = (valor: string | number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(Number(valor))
   }
 
   return (
@@ -33,16 +86,19 @@ function App() {
         <div className="card-content">
           <div>
             <div className="category">Arrecadado</div>
-            <div className="amount">R$ 6.370,99</div>
-            <div className="goal">Meta: R$ 11.500,00</div>
+            <div className="amount">{formatarMoeda(amount)}</div>
+            <div className="goal">Meta: {formatarMoeda(meta)}</div>
           </div>
 
           <div className="progress-bar">
-            <div className="progress-value"></div>
+            <div 
+              className="progress-value" 
+              style={{ width: `${(amount / Number(meta)) * 100}%` }}
+            ></div>
           </div>
 
           <div className="footer">
-            <div className="supporters">Apoiadores: 35</div>
+            <div className="supporters">Apoiadores: {apoiadores}</div>
             <button className="button" onClick={() => setIsModalOpen(true)}>Quero Ajudar</button>
           </div>
         </div>
@@ -65,6 +121,8 @@ function App() {
             <button className="close-button" onClick={() => {
               setIsModalOpen(false)
               setStep(1)
+              setValor('')
+              setNome('')
             }}>×</button>
 
             {step === 1 ? (
