@@ -79,8 +79,14 @@ function App() {
   };
 
   const copyPixKey = () => {
-    navigator.clipboard.writeText('62 985201901');
-    toast.success("Chave PIX copiada!");
+    if(valor) {
+      const pixCodeWithoutAmount = '00020126360014BR.GOV.BCB.PIX0114+55629852019015204000053039865802BR5901N6001C62070503***63042660';
+      const payload = addAmountToPixCode(pixCodeWithoutAmount, Number(valor));
+      navigator.clipboard.writeText(payload);
+      toast.success("Chave PIX copiada!");
+    } else {
+      toast.error("Não há chave PIX disponível.");
+    }
   };
 
   const formatarMoeda = (valor: string | number) => {
