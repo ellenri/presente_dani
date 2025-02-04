@@ -1,56 +1,46 @@
-import { ChakraProvider, Box, VStack, Image, Text, Button, Progress, Heading, HStack } from '@chakra-ui/react'
+import './styles.css'
 
 function App() {
   return (
-    <ChakraProvider resetCSS>
-      <Box minH="100vh" bg="gray.50" py={8}>
-        <VStack spacing={8} w="full" maxW="800px" mx="auto" px={4}>
-          {/* Cabeçalho */}
-          <VStack w="full" spacing={2}>
-            <Text fontSize="sm" color="gray.500">EDUCAÇÃO / APRENDIZAGEM</Text>
-            <Heading size="lg" textAlign="center">
-              Intercâmbio na República Tcheca: Me ajude nessa jornada
-            </Heading>
-            <Text color="gray.500">ID: 5223815</Text>
-          </VStack>
+    <div className="container">
+      {/* Cabeçalho */}
+      <div className="header">       
+        <h1 className="title">Intercâmbio na República Tcheca: Me ajude nessa jornada</h1>
+        <div className="id">ID: 5223815</div>
+      </div>
 
-          {/* Card Principal */}
-          <Box w="full" bg="white" borderRadius="lg" overflow="hidden" boxShadow="md">
-            <Image src="/dani.jpg" alt="Foto da Dani" w="full" h="400px" objectFit="cover"/>
-            
-            {/* Informações de Arrecadação */}
-            <VStack p={6} spacing={4} align="stretch">
-              <Box>
-                <Text fontSize="sm" color="gray.500">Arrecadado</Text>
-                <Text fontSize="3xl" color="green.400" fontWeight="bold">
-                  R$ 6.370,99
-                </Text>
-                <Text fontSize="sm" color="gray.500">Meta: R$ 11.500,00</Text>
-              </Box>
+      {/* Card Principal */}
+      <div className="card">
+        <img src="/dani.jpg" alt="Foto da Dani" className="card-image" />
+        
+        <div className="card-content">
+          <div>
+            <div className="category">Arrecadado</div>
+            <div className="amount">R$ 6.370,99</div>
+            <div className="goal">Meta: R$ 11.500,00</div>
+          </div>
 
-              <Progress value={55} colorScheme="green" borderRadius="full" />
+          <div className="progress-bar">
+            <div className="progress-value"></div>
+          </div>
 
-              <HStack justify="space-between">
-                <Text fontSize="sm" color="gray.500">Apoiadores: 35</Text>
-                <Button colorScheme="green" size="lg">
-                  Quero Ajudar
-                </Button>
-              </HStack>
-            </VStack>
-          </Box>
+          <div className="footer">
+            <div className="supporters">Apoiadores: 35</div>
+            <button className="button">Quero Ajudar</button>
+          </div>
+        </div>
+      </div>
 
-          {/* Descrição */}
-          <Box w="full" bg="white" p={6} borderRadius="lg" boxShadow="md">
-            <Text>
-              Oi gente! Estou fazendo um intercâmbio pelo Rotary na República Tcheca. 
-              Tem uma viagem proposta por eles para os intercambistas para fazer um tour histórico pelo continente,
-              mas o custo é muito alto para mim. Por isso fiz essa vaquinha e agradeceria muito se vocês pudessem
-              colaborar com qualquer valor para me ajudar a ir com o grupo. Desde já, gratidão!
-            </Text>
-          </Box>
-        </VStack>
-      </Box>
-    </ChakraProvider>
+      {/* Descrição */}
+      <div className="description">
+        <p>
+          Oi gente! Estou fazendo um intercâmbio pelo Rotary na República Tcheca. 
+          Tem uma viagem proposta por eles para os intercambistas para fazer um tour histórico pelo continente,
+          mas o custo é muito alto para mim. Por isso fiz essa vaquinha e agradeceria muito se vocês pudessem
+          colaborar com qualquer valor para me ajudar a ir com o grupo. Desde já, gratidão!
+        </p>
+      </div>
+    </div>
   )
 }
 
