@@ -18,7 +18,7 @@ function App() {
   const [apoiadores, setApoiadores] = useState(0);
   const meta = import.meta.env.VITE_META;
 
-  useHotjar(Number(process.env.VITE_HOTJAR_ID)); // Pegando o ID do Hotjar das variáveis de ambiente
+  useHotjar(Number(import.meta.env.VITE_HOTJAR_ID)); // Pegando o ID do Hotjar das variáveis de ambiente
 
   // Carrega os dados do Supabase ao iniciar
   useEffect(() => {
@@ -29,6 +29,7 @@ function App() {
     if (valor) {
       updatePix();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valor]);
 
   const updatePix = async () => {
