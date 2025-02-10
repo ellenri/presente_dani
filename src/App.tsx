@@ -5,6 +5,7 @@ import QRCode from "qrcode";
 import addAmountToPixCode from './pix/addAmount';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import useHotjar from "./hooks/useHotjar";
 
 
 function App() {
@@ -16,6 +17,8 @@ function App() {
   const [pix, setPix] = useState<string | null>(null);
   const [apoiadores, setApoiadores] = useState(0);
   const meta = import.meta.env.VITE_META;
+
+  useHotjar(Number(process.env.VITE_HOTJAR_ID)); // Pegando o ID do Hotjar das variáveis de ambiente
 
   // Carrega os dados do Supabase ao iniciar
   useEffect(() => {
